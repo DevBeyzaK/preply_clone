@@ -12,6 +12,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
 theme: ThemeData(
   primaryColor: Color.fromRGBO(255, 122, 172, 1),
+   bottomNavigationBarTheme: BottomNavigationBarThemeData(
+      backgroundColor: Colors.white, // Tema üzerinden arka plan rengi
+    ),
 ),
 debugShowCheckedModeBanner: false,
 home:Login() ,

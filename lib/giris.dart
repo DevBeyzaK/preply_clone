@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:preply_clone/mainpage.dart';
-
+import 'package:preply_clone/home.dart';
 class Giris extends StatefulWidget {
   const Giris({super.key});
 
@@ -107,7 +106,7 @@ class _GirisState extends State<Giris> {
                       if (_formKey.currentState!.validate()) {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => const MainPage()),
+                          MaterialPageRoute(builder: (context) => const Home()),
                         );
                       }
                     },
