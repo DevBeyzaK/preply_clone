@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 class Insights extends StatefulWidget {
-  const Insights({super.key});
+  final VoidCallback openDrawer;
+  const Insights({super.key,required this.openDrawer});
 
   @override
   State<Insights> createState() => _InsightsState();
