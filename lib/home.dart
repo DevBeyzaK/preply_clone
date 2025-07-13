@@ -13,8 +13,9 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  bool isOn =true;
-  int selectedIndex = 0;
+  bool isOn=true;
+  bool isVisible =true;//profile visibility için
+  int selectedIndex = 0; 
   final List<Widget> pages = [
     const HomePage(),  // Home sayfa, ayrı widget olmalı
     const Messages(),
@@ -92,21 +93,14 @@ class _HomeState extends State<Home> {
           ],
         ),
         onTap: () {
-          showModalBottomSheet(context: context, builder: (BuildContext context){
+          _onButtonPressed();
+          showModalBottomSheet(context: context, builder: (context){
             return Container(
-              height: 200,
-              child: Center(
-                child: Text("Profile visibility settings will be here."),
-              ),
             );
           });
           setState(() {
             selectedIndex = 0;
           });
-          setState(() {
-          isOn = !isOn;
-        });
-
           Navigator.pop(context);
         },
       ),
@@ -278,6 +272,154 @@ class _HomeState extends State<Home> {
        ), // Home sayfası için başlangıç indeksi
       );
   }
+  
+  void _onButtonPressed() async {
+  bool? result = await showModalBottomSheet<bool>(
+    context: context,
+    isDismissible: true,
+    builder: (context) {
+      bool tempIsVisible = isVisible; // Modalda başlangıç değeri
+      return StatefulBuilder(
+        builder: (BuildContext context, StateSetter setModalState) {
+          return Container(
+            height: 320,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Column(
+              children: [
+                Align(
+                  alignment: Alignment.topRight,
+                  child: IconButton(
+                              icon: Icon(Icons.close, color: Colors.black),
+                              onPressed: () {
+                                Navigator.pop(context); // Modalı kapat
+                              }
+                          ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text("Select your profile visibility state", style: TextStyle(fontSize: 18))),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: tempIsVisible ? Colors.grey[300] : Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      side: BorderSide(
+                        color: tempIsVisible ? Colors.black : Colors.grey,
+                        width: tempIsVisible ? 2 : 1,
+                      ),
+                    ),
+                    onPressed: () {
+                      setModalState(() {
+                        tempIsVisible = true;
+                      });
+                    },
+                    child: Row(
+                      children: [
+                        Icon(Icons.visibility, color: Colors.black, size: 30),
+                        SizedBox(width: 20),
+                        Text("Visible", style: TextStyle(fontSize: 20, color: Colors.black54)),
+                        Spacer(),
+                        Radio<bool>(
+                          value: true,
+                          groupValue: tempIsVisible,
+                          onChanged: (bool? value) {
+                            setModalState(() {
+                              tempIsVisible = value!;
+                            });
+                          },
+                          activeColor: Colors.black,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(height: 10),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: !tempIsVisible ? Colors.grey[300] : Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      side: BorderSide(
+                        color: !tempIsVisible ? Colors.black : Colors.grey,
+                        width: !tempIsVisible ? 2 : 1,
+                      ),
+                    ),
+                    onPressed: () {
+                      setModalState(() {
+                        tempIsVisible = false;
+                      });
+                    },
+                    child: Row(
+                      children: [
+                        Icon(Icons.visibility_off, color: Colors.black, size: 30),
+                        SizedBox(width: 20),
+                        Text("Hidden", style: TextStyle(fontSize: 20, color: Colors.black54)),
+                        Spacer(),
+                        Radio<bool>(
+                          value: false,
+                          groupValue: tempIsVisible,
+                          onChanged: (bool? value) {
+                            setModalState(() {
+                              tempIsVisible = value!;
+                            });
+                          },
+                          activeColor: Colors.black,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(height: 20,),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color.fromRGBO(255, 121, 172, 1),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        side: BorderSide(
+                          color: Colors.black,
+                          width: 2,
+                        ),
+                      ),
+                      onPressed: () {
+                        Navigator.pop(context, tempIsVisible); // Seçimi geri gönder
+                      },
+                      child: Text("Save",style: TextStyle(color: Colors.black,fontSize: 20),),
+                    ),
+                  ),
+                )
+              ],
+            ),
+          );
+        },
+      );
+    },
+  );
+
+  if (result != null) {
+    setState(() {
+      isVisible = result;  // Ana state güncelleniyor
+      isOn = isVisible;   // isOn da isVisible ile uyumlu olabilir
+    });
+  }
+}
+
   }
 
 
@@ -393,7 +535,9 @@ class HomePage extends StatelessWidget {
                               Padding(
                                 padding: const EdgeInsets.only(left: 20),
                                 child: ElevatedButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    Navigator.push(context, MaterialPageRoute(builder: (context) => Schedule(),));
+                                  },
                                   child: Text(
                                     "View action",
                                     style: TextStyle(
@@ -455,7 +599,9 @@ class HomePage extends StatelessWidget {
                       ),
                     ),
                     GestureDetector(
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => Schedule(),));
+                        },
                         child: Text(
                           "See All",
                           style: TextStyle(
