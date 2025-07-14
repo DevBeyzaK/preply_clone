@@ -26,7 +26,9 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     final List<Widget> pages = [
-    HomePage(),  // Home sayfa, ayrı widget olmalı
+    HomePage(onChangePage: (index ) {  setState(() {
+      selectedIndex = index;
+    }); },),  // Home sayfa, ayrı widget olmalı
     Messages(openDrawer: openEndDrawer),
     Schedule(),
     Insights(openDrawer: openEndDrawer),
@@ -441,7 +443,9 @@ class _HomeState extends State<Home> {
 
   }
 class HomePage extends StatelessWidget {
-  const HomePage({Key? key}) : super(key: key);
+   final Function(int) onChangePage;
+
+  const HomePage({Key? key, required this.onChangePage}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -552,7 +556,7 @@ class HomePage extends StatelessWidget {
                                   padding: const EdgeInsets.only(left: 20),
                                   child: ElevatedButton(
                                     onPressed: () {
-                                      Navigator.push(context, MaterialPageRoute(builder: (context) => Schedule(),));
+                                       onChangePage(2); // Schedule sayfasına git
                                     },
                                     child: Text(
                                       "View action",
@@ -616,7 +620,7 @@ class HomePage extends StatelessWidget {
                       ),
                       GestureDetector(
                           onTap: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => Schedule(),));
+                            onChangePage(2); // Schedule sayfasına git
                           },
                           child: Text(
                             "See All",
